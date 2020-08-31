@@ -1,0 +1,363 @@
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  1
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00001 #include "p16f526.inc"
+                      00001         LIST
+                      00002 
+                      00003 ;==========================================================================
+                      00004 ; Build date : Mar 17 2019
+                      00005 ;  MPASM PIC16F526 processor include
+                      00006 ; 
+                      00007 ;  (c) Copyright 1999-2019 Microchip Technology, All rights reserved
+                      00008 ;==========================================================================
+                      00009 
+                      00268         LIST
+                      00002 
+0FFF   0F94           00003     __CONFIG _FOSC_INTRC_RB4 & _WDTE_OFF & _CP_OFF & _MCLRE_OFF & _IOSCFS_4MHz & _CPDF_OFF
+                      00004 
+                      00005 GPR_VAR     UDATA
+0000                  00006 c1          RES 1
+0001                  00007 time        RES 1
+0002                  00008 time_off    RES 1
+                      00009 
+                      00010 RES_VECT  CODE    0x0000
+0000   0A??           00011     GOTO    START
+                      00012 
+                      00013 MAIN_PROG CODE
+                      00014 
+0000                  00015 START
+                      00016 
+0000   0061           00017     clrf    TMR0
+0001   0CD2           00018     movlw   b'11010010'
+0002   0002           00019     option
+                      00020     
+0003   0C79           00021     movlw   b'01111001'
+0004   0029           00022     movwf   ADCON0
+                      00023     
+0005   0C40           00024     movlw   b'01000000'
+0006   0028           00025     movwf   CM1CON0
+0007   002B           00026     movwf   CM2CON0
+                      00027     
+0008   0C0C           00028     movlw   b'00001100'
+0009   0006           00029     tris    PORTB
+000A   0066           00030     clrf    PORTB
+                      00031     
+000B   0C00           00032     movlw   .0
+000C   0007           00033     tris    PORTC
+000D   0067           00034     clrf    PORTC
+                      00035 
+000E                  00036 mainloop
+                      00037     
+000E   09??           00038     call    convert_adc
+                      00039     
+000F   020A           00040     movf    ADRES,0
+                      00041 ; Turn on/off LEDs based on ADRES value
+                      00042 ; PORTC<5:0> has ADRES<5:0> and PORTB<5:4> has ADRES<7:6>
+0010   0027           00043     movwf   PORTC
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  2
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+                      00044 
+0011                  00045 if1
+0011   06CA           00046     btfsc   ADRES,6
+0012   0A??           00047     goto    else1
+0013   0486           00048     bcf     PORTB,4
+0014   0A??           00049     goto    fi1
+0015                  00050 else1
+0015   0586           00051     bsf     PORTB,4
+0016                  00052 fi1
+                      00053 
+0016                  00054 if2
+0016   06EA           00055     btfsc   ADRES,7
+0017   0A??           00056     goto    else2
+0018   04A6           00057     bcf     PORTB,5
+0019   0A??           00058     goto    fi2
+001A                  00059 else2
+001A   05A6           00060     bsf     PORTB,5
+001B                  00061 fi2
+                      00062 
+                      00063 ; PWM
+                      00064     
+001B   020A           00065     movf    ADRES,0
+001C   00??           00066     movwf   time_off
+001D   02??           00067     comf    time_off,1
+                      00068     
+001E   0506           00069     bsf     PORTB,0
+001F   00??           00070     movwf   time
+0020   09??           00071     call    tm1
+                      00072     
+0021   0406           00073     bcf     PORTB,0
+0022   02??           00074     movf    time_off,0
+0023   00??           00075     movwf   time
+0024   09??           00076     call    tm1
+0025   0A??           00077     goto mainloop
+                      00078     
+0026                  00079 convert_adc
+0026   09??           00080     call adc_wait_time
+0027   0529           00081     bsf     ADCON0, 1
+0028                  00082 convert_adc_loop
+0028   0629           00083     btfsc   ADCON0, 1
+0029   0A??           00084     goto    convert_adc_loop
+002A   0800           00085     retlw   0
+                      00086 
+002B                  00087 adc_wait_time
+002B   0CFF           00088     movlw   .255
+002C   00??           00089     movwf   c1
+002D                  00090 adc_wait_time_et1
+002D   02??           00091     decfsz  c1,1
+002E   0A??           00092     goto    adc_wait_time_et1
+002F   0800           00093     retlw   0
+                      00094 
+0030                  00095 tm1
+0030   09??           00096     call    tm_timer
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  3
+
+
+LOC  OBJECT CODE     LINE SOURCE TEXT
+  VALUE
+
+0031   02??           00097     decfsz  time,1
+0032   0A??           00098     goto    tm1
+0033   0800           00099     retlw   0
+                      00100     
+0034                  00101 tm_timer ; 1ms delay
+0034   0C05           00102     movlw   .5
+0035   0021           00103     movwf   TMR0
+0036   0443           00104     bcf     STATUS,2
+                      00105     
+0037                  00106 tm_timer_et1
+0037   0201           00107     movf    TMR0,0
+0038   0743           00108     btfss   STATUS,2
+0039   0A??           00109     goto    tm_timer_et1
+003A   0800           00110     retlw   0
+                      00111     
+                      00112 ;tm1 ; 500ms
+                      00113 ;    movlw   b'11010111'
+                      00114 ;    option
+                      00115 ;    movlw   .10
+                      00116 ;    movwf   c1
+                      00117 ;tm1_et1
+                      00118 ;    movlw   .1
+                      00119 ;    movwf   TMR0
+                      00120 ;    bcf            STATUS,2
+                      00121 ;
+                      00122 ;tm1_et2
+                      00123 ;    movf    TMR0,0
+                      00124 ;    btfss   STATUS,2
+                      00125 ;    goto    tm1_et2
+                      00126 ;    
+                      00127 ;    decfsz  c1,1
+                      00128 ;    goto    tm1_et1
+                      00129 ;    
+                      00130 ;    movlw   b'11010101'
+                      00131 ;    option
+                      00132 ;    
+                      00133 ;    movlw   .21
+                      00134 ;    movwf   TMR0
+                      00135 ;    bcf            STATUS,2
+                      00136 ;
+                      00137 ;tm1_et3
+                      00138 ;    movf    TMR0,0
+                      00139 ;    btfss   STATUS,2
+                      00140 ;    goto    tm1_et3
+                      00141 ;    
+                      00142 ;    retlw   0
+                      00143     
+0F94                  00144     END
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  4
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+ADCON0                            00000009
+ADCS0                             00000004
+ADCS1                             00000005
+ADON                              00000000
+ADRES                             0000000A
+ADRES0                            00000000
+ADRES1                            00000001
+ADRES2                            00000002
+ADRES3                            00000003
+ADRES4                            00000004
+ADRES5                            00000005
+ADRES6                            00000006
+ADRES7                            00000007
+ANS0                              00000006
+ANS1                              00000007
+C                                 00000000
+C1NREF                            00000002
+C1ON                              00000003
+C1OUT                             00000007
+C1POL                             00000005
+C1PREF                            00000001
+C2NREF                            00000002
+C2ON                              00000003
+C2OUT                             00000007
+C2POL                             00000005
+C2PREF1                           00000001
+C2PREF2                           00000004
+CAL0                              00000001
+CAL1                              00000002
+CAL2                              00000003
+CAL3                              00000004
+CAL4                              00000005
+CAL5                              00000006
+CAL6                              00000007
+CHS0                              00000002
+CHS1                              00000003
+CM1CON0                           00000008
+CM2CON0                           0000000B
+CWUF                              00000006
+DC                                00000001
+EEADR                             00000026
+EECON                             00000021
+EEDATA                            00000025
+F                                 00000001
+FREE                              00000004
+FSR                               00000004
+GO                                00000001
+GO_NOT_DONE                       00000001
+INDF                              00000000
+NOT_C1OUTEN                       00000006
+NOT_C1T0CS                        00000004
+NOT_C1WU                          00000000
+NOT_C2OUTEN                       00000006
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  5
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+NOT_C2WU                          00000000
+NOT_DONE                          00000001
+NOT_PD                            00000003
+NOT_RBPU                          00000006
+NOT_RBWU                          00000007
+NOT_TO                            00000004
+OSCCAL                            00000005
+PA0                               00000005
+PCL                               00000002
+PORTB                             00000006
+PORTC                             00000007
+PS0                               00000000
+PS1                               00000001
+PS2                               00000002
+PSA                               00000003
+RB0                               00000000
+RB1                               00000001
+RB2                               00000002
+RB3                               00000003
+RB4                               00000004
+RB5                               00000005
+RBWUF                             00000007
+RC0                               00000000
+RC1                               00000001
+RC2                               00000002
+RC3                               00000003
+RC4                               00000004
+RC5                               00000005
+RD                                00000000
+START                             00000000
+STATUS                            00000003
+T0CS                              00000005
+T0SE                              00000004
+TMR0                              00000001
+TRISB0                            00000000
+TRISB1                            00000001
+TRISB2                            00000002
+TRISB3                            00000003
+TRISB4                            00000004
+TRISB5                            00000005
+TRISC0                            00000000
+TRISC1                            00000001
+TRISC2                            00000002
+TRISC3                            00000003
+TRISC4                            00000004
+TRISC5                            00000005
+VR0                               00000000
+VR1                               00000001
+VR2                               00000002
+VR3                               00000003
+VRCON                             0000000C
+VREN                              00000007
+VROE                              00000006
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  6
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+VRR                               00000005
+W                                 00000000
+WR                                00000001
+WREN                              00000002
+WRERR                             00000003
+Z                                 00000002
+_CONFIG                           00000FFF
+_CPDF_OFF                         00000FFF
+_CPDF_ON                          00000F7F
+_CP_OFF                           00000FFF
+_CP_ON                            00000FEF
+_EC_OSC                           00000FFB
+_ExtRC_OSC_CLKOUT                 00000FFF
+_ExtRC_OSC_RB4                    00000FFE
+_FOSC_EC                          00000FFB
+_FOSC_ExtRC_CLKOUT                00000FFF
+_FOSC_ExtRC_RB4                   00000FFE
+_FOSC_HS                          00000FFA
+_FOSC_INTRC_CLKOUT                00000FFD
+_FOSC_INTRC_RB4                   00000FFC
+_FOSC_LP                          00000FF8
+_FOSC_XT                          00000FF9
+_HS_OSC                           00000FFA
+_IDLOC0                           00000440
+_IDLOC1                           00000441
+_IDLOC2                           00000442
+_IDLOC3                           00000443
+_IOSCFS_4MHz                      00000FBF
+_IOSCFS_8MHz                      00000FFF
+_IntRC_OSC_CLKOUT                 00000FFD
+_IntRC_OSC_RB4                    00000FFC
+_LP_OSC                           00000FF8
+_MCLRE_OFF                        00000FDF
+_MCLRE_ON                         00000FFF
+_WDTE_OFF                         00000FF7
+_WDTE_ON                          00000FFF
+_XT_OSC                           00000FF9
+__16F526                          00000001
+adc_wait_time                     0000002B
+adc_wait_time_et1                 0000002D
+c1                                00000000
+convert_adc                       00000026
+convert_adc_loop                  00000028
+else1                             00000015
+else2                             0000001A
+fi1                               00000016
+fi2                               0000001B
+if1                               00000011
+if2                               00000016
+mainloop                          0000000E
+time                              00000001
+time_off                          00000002
+tm1                               00000030
+MPASM 5.84                          MAIN.ASM   11-8-2019  9:24:39         PAGE  7
+
+
+SYMBOL TABLE
+  LABEL                             VALUE 
+
+tm_timer                          00000034
+tm_timer_et1                      00000037
+
+Errors   :     0
+Warnings :     0 reported,     0 suppressed
+Messages :     0 reported,     0 suppressed
+
+

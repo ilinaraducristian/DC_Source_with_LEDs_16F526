@@ -1,0 +1,70 @@
+MPLINK 5.09, LINKER
+Linker Map File - Created Fri Nov 08 09:24:40 2019
+
+                                 Section Info
+                  Section       Type    Address   Location Size(Bytes)
+                ---------  ---------  ---------  ---------  ---------
+                 RES_VECT       code   0x000000    program   0x000002
+                   .cinit    romdata   0x000001    program   0x000004
+                MAIN_PROG       code   0x000003    program   0x000076
+.config_0FFF_BUILD/DEFAULT/PRODUCTION/MAIN.O       code   0x000fff    program   0x000002
+                  GPR_VAR      udata   0x000010       data   0x000003
+
+
+
+                              Program Memory Usage 
+                               Start         End      
+                           ---------   ---------      
+                            0x000000    0x00003d      
+                            0x000fff    0x000fff      
+            63 out of 1093 program addresses used, program memory utilization is 5%
+
+
+
+                              Symbols - Sorted by Name
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    START   0x000003    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+            adc_wait_time   0x00002e    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+        adc_wait_time_et1   0x000030    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+              convert_adc   0x000029    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+         convert_adc_loop   0x00002b    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                    else1   0x000018    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                    else2   0x00001d    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      fi1   0x000019    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      fi2   0x00001e    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      if1   0x000014    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      if2   0x000019    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                 mainloop   0x000011    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      tm1   0x000033    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                 tm_timer   0x000037    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+             tm_timer_et1   0x00003a    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                       c1   0x000010       data     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                     time   0x000011       data     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                 time_off   0x000012       data     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+
+
+
+                              Symbols - Sorted by Address
+                     Name    Address   Location    Storage File                     
+                ---------  ---------  ---------  --------- ---------                
+                    START   0x000003    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                 mainloop   0x000011    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      if1   0x000014    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                    else1   0x000018    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      fi1   0x000019    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      if2   0x000019    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                    else2   0x00001d    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      fi2   0x00001e    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+              convert_adc   0x000029    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+         convert_adc_loop   0x00002b    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+            adc_wait_time   0x00002e    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+        adc_wait_time_et1   0x000030    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                      tm1   0x000033    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                 tm_timer   0x000037    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+             tm_timer_et1   0x00003a    program     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                       c1   0x000010       data     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                     time   0x000011       data     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+                 time_off   0x000012       data     static C:\Users\Reydw\MPLABXProjects\DC_Source_with_LEDs_16F526.X\main.asm
+
+
